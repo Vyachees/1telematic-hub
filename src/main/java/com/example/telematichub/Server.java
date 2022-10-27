@@ -3,17 +3,12 @@ package com.example.telematichub; /**
  * @create 2022.10.25 20:29
  **/
 
+//import com.example.telematichub.RMQpart.Runner;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.io.*;
-import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
+//import com.example.telematichub.RMQpart.Runner;
 
 @Slf4j
 public class Server extends Thread
@@ -48,6 +43,8 @@ public class Server extends Thread
         start();
     }
 
+    //Runner s=new Runner("localhost",2);
+
     public void run()
     {
         try {
@@ -60,6 +57,12 @@ public class Server extends Thread
             DataOutputStream dos = new DataOutputStream(sout);
 
             String line = null;
+
+          //  RabbitTemplate rabbitTemplate=new RabbitTemplate();
+          //  rabbitTemplate.convertAndSend(TelematicHubApplication.topicExchangeName, "foo.bar.baz", "The great message 5!");
+          //  Runner runner = new Runner();
+            SenderToRMQ senderToRMQ=new SenderToRMQ();
+
             while(true) {
                 // Ожидание сообщения от клиента
                 line = dis.readUTF();
@@ -69,6 +72,8 @@ public class Server extends Thread
                 // Отсылаем клиенту обратно эту самую
                 // строку текста
                 dos.writeUTF("Server receive text : " + line);
+                //отправляем сообщение в RMQ
+                senderToRMQ.send(line);
                 // Завершаем передачу данных
                 dos.flush();
                 log.info("\n");
