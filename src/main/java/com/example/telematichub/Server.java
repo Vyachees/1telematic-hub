@@ -1,24 +1,14 @@
-package com.example.telematichub; /**
- * @author Vyacheslav Kirillov
- * @create 2022.10.25 20:29
- **/
+package com.example.telematichub;
 
-//import com.example.telematichub.RMQpart.Runner;
 import lombok.extern.slf4j.Slf4j;
-
 import java.io.*;
 import java.net.Socket;
-//import com.example.telematichub.RMQpart.Runner;
 
 @Slf4j
 public class Server extends Thread
 {
-    // открываемый порт сервера
+    //Opening the server port
     public static final int port   = 50001;
-    private String TEMPL_MSG =
-            "The client '%d' sent me message :";
-    private String TEMPL_CONN =
-            "The client '%d' closed the connection";
 
     private  Socket socket;
     private  int    num;
@@ -27,61 +17,52 @@ public class Server extends Thread
 
     public void setSocket(int num, Socket socket)
     {
-        // Определение значений
+        // Definition of values
         this.num    = num;
         this.socket = socket;
 
-        // Установка daemon-потока
+        // Installing a daemon thread
         setDaemon(true);
         /*
-         * Определение стандартного приоритета главного потока
+         * Determining the default priority of the main thread
          * int java.lang.Thread.NORM_PRIORITY = 5-the default
          *               priority that is assigned to a thread.
          */
         setPriority(NORM_PRIORITY);
-        // Старт потока
         start();
     }
 
-    //Runner s=new Runner("localhost",2);
+
 
     public void run()
     {
         try {
-            // Определяем входной и выходной потоки сокета
-            // для обмена данными с клиентом
+            // In and out streams
             InputStream  sin  = socket.getInputStream();
             OutputStream sout = socket.getOutputStream();
-
             DataInputStream  dis = new DataInputStream (sin );
             DataOutputStream dos = new DataOutputStream(sout);
-
-            String line = null;
-
-          //  RabbitTemplate rabbitTemplate=new RabbitTemplate();
-          //  rabbitTemplate.convertAndSend(TelematicHubApplication.topicExchangeName, "foo.bar.baz", "The great message 5!");
-          //  Runner runner = new Runner();
-            SenderToRMQ senderToRMQ=new SenderToRMQ();
+            String line;
 
             while(true) {
-                // Ожидание сообщения от клиента
+                // Waiting for a message from the client
                 line = dis.readUTF();
+                String TEMPL_MSG = "The client '%d' sent me message :";
                 log.info(
                         String.format(TEMPL_MSG, num) + line);
                 log.info("I'm sending it back...");
-                // Отсылаем клиенту обратно эту самую
-                // строку текста
+                // We send back to the client this same line of text
                 dos.writeUTF("Server receive text : " + line);
-                //отправляем сообщение в RMQ
-                senderToRMQ.send(line);
-                // Завершаем передачу данных
+                //Send message to RMQ
+                SenderToRMQ.send(line);
+                // We complete the data transfer
                 dos.flush();
                 log.info("\n");
                 if (line.equalsIgnoreCase("quit")) {
-                    // завершаем соединение
+                    // End the connection
                     socket.close();
-                    System.out.println(
-                            String.format(TEMPL_CONN, num));
+                    String TEMPL_CONN = "The client '%d' closed the connection";
+                    log.info(String.format(TEMPL_CONN, num));
                     break;
                 }
             }
@@ -89,40 +70,4 @@ public class Server extends Thread
             log.info("Exception : " + e);
         }
     }
-    //---------------------------------------------------------
-
-   /* public static void main(String[] ar)
-    {
-        ServerSocket srvSocket = null;
-        try {
-            try {
-                int i = 0; // Счётчик подключений
-                // Подключение сокета к localhost
-                InetAddress ia;
-                ia = InetAddress.getByName("localhost");
-                srvSocket = new ServerSocket(port, 0, ia);
-
-                System.out.println("Server started\n\n");
-
-                while(true) {
-                    // ожидание подключения
-                    Socket socket = srvSocket.accept();
-                    System.err.println("Client accepted");
-                    // Стартуем обработку клиента
-                    // в отдельном потоке
-                    new Server().setSocket(i++, socket);
-                }
-            } catch(Exception e) {
-                System.out.println("Exception : " + e);
-            }
-        } finally {
-            try {
-                if (srvSocket != null)
-                    srvSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        System.exit(0);
-    }*/
 }
