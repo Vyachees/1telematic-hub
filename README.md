@@ -1,3 +1,3 @@
 # telematic-hub
 First part of study project.
-Generating fake data from truck
+Receiving data from 1truck-emulator and sending to RMQ
