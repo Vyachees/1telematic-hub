@@ -15,6 +15,8 @@
     <description>telematic-hub</description>
     <properties>
         <java.version>1.8</java.version>
+        <start-class>com.example.telematichub.TelematicHubApplication</start-class>
+
     </properties>
     <dependencies>
         <dependency>
@@ -37,13 +39,54 @@
         </dependency>
     </dependencies>
 
+
+
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
-            <plugin>
+           <!-- <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <executable>true</executable>
+                </configuration>
             </plugin>
-        </plugins>
-    </build>
+            -->
 
-</project>
+            <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>2.5.3</version>
+            <configuration>
+                <descriptorRefs>
+                    <descriptorRef>jar-with-dependencies</descriptorRef>
+                </descriptorRefs>
+                <archive>
+                    <manifest>
+                        <mainClass>com.example.telematichub.TelematicHubApplication</mainClass>
+                    </manifest>
+                </archive>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>make-assembly</id>
+                    <!-- this is used for inheritance merges  -->
+                    <phase>package</phase>
+                    <!--  bind to the packaging phase -->
+                    <goals>
+                        <goal>single</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+
+
+          </plugins>
+      </build>
+
+  </project>

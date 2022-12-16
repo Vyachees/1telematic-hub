@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
+//@Component
 public class SenderToRMQ {
     private final static String QUEUE_NAME = "spring-boot";
     private final static String EXCHANGE_NAME = "TestData3";

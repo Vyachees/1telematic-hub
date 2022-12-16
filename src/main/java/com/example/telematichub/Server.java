@@ -8,7 +8,7 @@ import java.net.Socket;
 public class Server extends Thread
 {
     //Opening the server port
-    public static final int port   = 50001;
+    public static final int port   = 9204;
 
     private  Socket socket;
     private  int    num;
@@ -54,7 +54,7 @@ public class Server extends Thread
                 // We send back to the client this same line of text
                 dos.writeUTF("Server receive text : " + line);
                 //Send message to RMQ
-                SenderToRMQ.send(line);
+              //  SenderToRMQ.send(line);
                 // We complete the data transfer
                 dos.flush();
                 log.info("\n");

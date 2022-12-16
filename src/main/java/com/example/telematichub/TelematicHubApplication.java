@@ -16,6 +16,7 @@ public class TelematicHubApplication {
     public static void main(String[] args) {
         SpringApplication.run(TelematicHubApplication.class, args);
         ServerSocket srvSocket = null;
+        log.info("MyClassPath is "+System.getProperty("java.class.path"));
         try {
             try {
                 int i = 0; // Count connects
