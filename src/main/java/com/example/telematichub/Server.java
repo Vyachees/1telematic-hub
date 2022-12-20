@@ -8,7 +8,7 @@ import java.net.Socket;
 public class Server extends Thread
 {
     //Opening the server port
-    public static final int port   = 9204;
+    public static final int port   = 9208;
 
     private  Socket socket;
     private  int    num;

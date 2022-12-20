@@ -22,10 +22,10 @@ public class TelematicHubApplication {
                 int i = 0; // Count connects
                 // Connect to localhost
                 InetAddress ia;
-                ia = InetAddress.getByName("localhost");
+                ia = InetAddress.getByName("0.0.0.0");
                 srvSocket = new ServerSocket(port, 0, ia);
 
-                System.out.println("Server started\n\n");
+                System.out.println("Server started on port " +port+ "\n\n");
 
                 while(true) {
                     Socket socket = srvSocket.accept();
